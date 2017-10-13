@@ -7,8 +7,8 @@ import { DataSource } from '../../lib/data-source/data-source';
   selector: 'ng2-smart-table-pager',
   styleUrls: ['./pager.component.scss'],
   template: `
-    <nav *ngIf="shouldShow()" class="ng2-smart-pagination-nav">
-      <ul class="ng2-smart-pagination pagination">
+    <nav class="ng2-smart-pagination-nav">
+      <ul class="ng2-smart-pagination pagination" *ngIf="shouldShowPerPage()">
         <select class="form-control" [(ngModel)]="perPage" name="perPage">
           <option value="10">10</option>
           <option value="25">25</option>
@@ -16,7 +16,7 @@ import { DataSource } from '../../lib/data-source/data-source';
           <option value="100">100</option>
         </select>
       </ul>
-      <ul class="ng2-smart-pagination pagination">
+      <ul class="ng2-smart-pagination pagination" *ngIf="shouldShowPages()" >
         <li class="ng2-smart-page-item page-item" [ngClass]="{disabled: getPage() == 1}">
           <a class="ng2-smart-page-link page-link" href="#"
           (click)="getPage() == 1 ? false : paginate(1)" aria-label="First">
@@ -90,8 +90,12 @@ export class PagerComponent implements OnChanges {
     }
   }
 
-  shouldShow(): boolean {
+  shouldShowPages(): boolean {
     return this.source.count() > this._perPage;
+  }
+
+  shouldShowPerPage(): boolean {
+    return this.source.count() > 10;
   }
 
   paginate(page: number): boolean {
