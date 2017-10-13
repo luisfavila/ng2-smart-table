@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-
+import { FormsModule }   from '@angular/forms';
 import { DataSource } from '../../lib/data-source/data-source';
 
 @Component({
@@ -8,6 +8,14 @@ import { DataSource } from '../../lib/data-source/data-source';
   styleUrls: ['./pager.component.scss'],
   template: `
     <nav *ngIf="shouldShow()" class="ng2-smart-pagination-nav">
+      <ul class="ng2-smart-pagination pagination">
+        <select class="form-control" [(ngModel)]="perPage" name="perPage">
+          <option value="10">10</option>
+          <option value="10">25</option>
+          <option value="10">50</option>
+          <option value="10">100</option>
+        </select>
+      </ul>
       <ul class="ng2-smart-pagination pagination">
         <li class="ng2-smart-page-item page-item" [ngClass]="{disabled: getPage() == 1}">
           <a class="ng2-smart-page-link page-link" href="#"
@@ -23,7 +31,6 @@ import { DataSource } from '../../lib/data-source/data-source';
           <a class="ng2-smart-page-link page-link" href="#"
           (click)="paginate(page)" *ngIf="getPage() != page">{{ page }}</a>
         </li>
-
         <li class="ng2-smart-page-item page-item"
         [ngClass]="{disabled: getPage() == getLast()}">
           <a class="ng2-smart-page-link page-link" href="#"
@@ -45,7 +52,7 @@ export class PagerComponent implements OnChanges {
   protected pages: Array<any>;
   protected page: number;
   protected count: number = 0;
-  protected perPage: number;
+  protected _perPage: number;
 
   protected dataChangedSub: Subscription;
 
@@ -56,7 +63,7 @@ export class PagerComponent implements OnChanges {
       }
       this.dataChangedSub = this.source.onChanged().subscribe((dataChanges) => {
         this.page = this.source.getPaging().page;
-        this.perPage = this.source.getPaging().perPage;
+        this._perPage = this.source.getPaging().perPage;
         this.count = this.source.count();
         if (this.isPageOutOfBounce()) {
           this.source.setPage(--this.page);
@@ -84,7 +91,7 @@ export class PagerComponent implements OnChanges {
   }
 
   shouldShow(): boolean {
-    return this.source.count() > this.perPage;
+    return this.source.count() > this._perPage;
   }
 
   paginate(page: number): boolean {
@@ -103,11 +110,20 @@ export class PagerComponent implements OnChanges {
   }
 
   getLast(): number {
-    return Math.ceil(this.count / this.perPage);
+    return Math.ceil(this.count / this._perPage);
   }
 
   isPageOutOfBounce(): boolean {
-    return (this.page * this.perPage) >= (this.count + this.perPage) && this.page > 1;
+    return (this.page * this._perPage) >= (this.count + this._perPage) && this.page > 1;
+  }
+   
+  get perPage(): number {
+    return this._perPage;
+  }
+   
+  set perPage(page: number){
+    this._perPage = page;
+    this.source.setPaging(this.page, this._perPage);
   }
 
   initPages() {
