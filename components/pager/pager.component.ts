@@ -136,7 +136,7 @@ export class PagerComponent implements OnChanges {
     showPagesCount = pagesCount < showPagesCount ? pagesCount : showPagesCount;
     this.pages = [];
 
-    if (this.shouldShow()) {
+    if (this.shouldShowPages() || this.shouldShowPerPage()) {
 
       let middleOne = Math.ceil(showPagesCount / 2);
       middleOne = this.page >= middleOne ? this.page : middleOne;
