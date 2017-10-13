@@ -11,9 +11,9 @@ import { DataSource } from '../../lib/data-source/data-source';
       <ul class="ng2-smart-pagination pagination">
         <select class="form-control" [(ngModel)]="perPage" name="perPage">
           <option value="10">10</option>
-          <option value="10">25</option>
-          <option value="10">50</option>
-          <option value="10">100</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
         </select>
       </ul>
       <ul class="ng2-smart-pagination pagination">
